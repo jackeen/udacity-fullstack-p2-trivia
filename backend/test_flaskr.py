@@ -1,10 +1,11 @@
 import os
 import unittest
 import json
+
 from flask_sqlalchemy import SQLAlchemy
 
 from flaskr import create_app
-from models import setup_db, Question, Category
+from models import Question, Category
 
 
 class TriviaTestCase(unittest.TestCase):
@@ -12,11 +13,12 @@ class TriviaTestCase(unittest.TestCase):
 
     def setUp(self):
         """Define test variables and initialize app."""
-        self.app = create_app()
-        self.client = self.app.test_client
         self.database_name = "trivia_test"
-        self.database_path = "postgres://{}/{}".format('localhost:5432', self.database_name)
-        setup_db(self.app, self.database_path)
+        self.database_path = "postgresql://{}/{}".format('localhost:5432', self.database_name)
+        self.app = create_app({
+            'database_path': self.database_path
+        })
+        self.client = self.app.test_client
 
         # binds the app to the current context
         with self.app.app_context():
@@ -33,6 +35,18 @@ class TriviaTestCase(unittest.TestCase):
     TODO
     Write at least one test for each test for successful operation and for expected errors.
     """
+    
+    def test_01_get_questions(self):
+        res = self.client().get('/questions')
+        body = json.loads(res.data)
+        
+        question_number = None
+        with self.app.app_context():
+            question_number = self.db.session.query(Question).count()
+
+        self.assertEqual(body['success'], True)
+        self.assertEqual(body['total_questions'], question_number)
+        self.assertLessEqual(len(body['questions']), 10)
 
 
 # Make the tests conveniently executable

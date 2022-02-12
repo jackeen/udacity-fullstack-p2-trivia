@@ -1,31 +1,51 @@
 import os
-from flask import Flask, request, abort, jsonify
+from unittest import result
+from flask import Flask, after_this_request, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
 
-from models import setup_db, Question, Category
+from models import setup_db, db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
-    setup_db(app)
+    if test_config is None:
+        setup_db(app)
+    else:
+        setup_db(app, database_path=test_config['database_path'])
 
     """
     @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
     """
+    CORS(app, origins=['*'])
+
 
     """
     @TODO: Use the after_request decorator to set Access-Control-Allow
     """
+    @app.after_request
+    def after_request(res):
+        res.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
+        res.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
+        return res
+
 
     """
     @TODO:
     Create an endpoint to handle GET requests
     for all available categories.
     """
+    @app.route('/categories')
+    def get_categories():
+        cates = db.session.query(Category).all()
+        cate_dict = {}
+        for c in cates:
+            cate_dict[c.id] = c.type
+
+        return jsonify(categories = cate_dict)
 
 
     """
@@ -40,6 +60,23 @@ def create_app(test_config=None):
     ten questions per page and pagination at the bottom of the screen for three pages.
     Clicking on the page numbers should update the questions.
     """
+    @app.route('/questions')
+    def get_questions():
+        page = request.args.get('page', 1, type=int)
+        offset = (page - 1) * QUESTIONS_PER_PAGE
+        
+        total_number = db.session.query(Question).count()
+        questions = db.session.query(Question).\
+                    order_by('id').\
+                    offset(offset).limit(QUESTIONS_PER_PAGE).\
+                    all()
+
+        return jsonify({
+            'success': True,
+            'total_questions': total_number,
+            'questions': [q.format() for q in questions],
+        })
+
 
     """
     @TODO:
@@ -97,6 +134,22 @@ def create_app(test_config=None):
     Create error handlers for all expected errors
     including 404 and 422.
     """
+    @app.errorhandler(404)
+    def not_found(err):
+        return jsonify({
+            'success': False,
+            'error': 404,
+            'message': 'Not found',
+        }), 404
+
+    @app.errorhandler(422)
+    def unprocessable_entity(err):
+        return jsonify({
+            'success': False,
+            'error': 422,
+            'message': 'Unprocessable entity',
+        }), 422
+
 
     return app
 
