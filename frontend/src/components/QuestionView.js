@@ -17,8 +17,26 @@ class QuestionView extends Component {
   }
 
   componentDidMount() {
+    this.getCategories();
     this.getQuestions();
   }
+
+  getCategories = () => {
+    $.ajax({
+      url: `/categories`,
+      type: 'GET',
+      success: (result) => {
+        this.setState({
+          categories: result.categories,
+        });
+        return;
+      },
+      error: (error) => {
+        alert('Unable to load categories. Please try your request again');
+        return;
+      },
+    });
+  };
 
   getQuestions = () => {
     $.ajax({
@@ -28,8 +46,8 @@ class QuestionView extends Component {
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
-          categories: result.categories,
-          currentCategory: result.current_category,
+          //categories: result.categories,
+          //currentCategory: result.current_category,
         });
         return;
       },
