@@ -150,6 +150,13 @@ def create_app(test_config=None):
             'message': 'Unprocessable entity',
         }), 422
 
+    @app.errorhandler(405)
+    def method_not_allowed(err):
+        return jsonify({
+            'success': False,
+            'error': 405,
+            'message': 'Method not allowed',
+        }), 405
 
     return app
 
