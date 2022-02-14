@@ -46,8 +46,7 @@ class QuestionView extends Component {
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
-          //categories: result.categories,
-          //currentCategory: result.current_category,
+          currentCategory: '-1', //result.current_category,
         });
         return;
       },
@@ -89,7 +88,7 @@ class QuestionView extends Component {
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
-          currentCategory: result.current_category,
+          currentCategory: id, //result.current_category,
         });
         return;
       },
@@ -148,20 +147,25 @@ class QuestionView extends Component {
     return (
       <div className='question-view'>
         <div className='categories-list'>
-          <h2
-            onClick={() => {
-              this.getQuestions();
-            }}
-          >
+          <h2>
             Categories
           </h2>
           <ul>
+              <li
+                onClick={() => {
+                  this.getQuestions();
+                }}
+                className={this.state.currentCategory === '-1' ? 'selected' : ''}
+              >
+                All
+              </li>
             {Object.keys(this.state.categories).map((id) => (
               <li
                 key={id}
                 onClick={() => {
                   this.getByCategory(id);
                 }}
+                className={this.state.currentCategory === id ? 'selected' : ''}
               >
                 {this.state.categories[id]}
                 <img
