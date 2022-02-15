@@ -101,11 +101,11 @@ class QuestionView extends Component {
 
   submitSearch = (searchTerm) => {
     $.ajax({
-      url: `/questions`, //TODO: update request URL
+      url: `/filter/questions`, //TODO: update request URL
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json',
-      data: JSON.stringify({ searchTerm: searchTerm }),
+      data: JSON.stringify({ keyword: searchTerm }),
       xhrFields: {
         withCredentials: true,
       },
@@ -114,7 +114,7 @@ class QuestionView extends Component {
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
-          currentCategory: result.current_category,
+          currentCategory: '-1', //result.current_category,
         });
         return;
       },
@@ -167,12 +167,12 @@ class QuestionView extends Component {
                 }}
                 className={this.state.currentCategory === id ? 'selected' : ''}
               >
-                {this.state.categories[id]}
                 <img
                   className='category'
                   alt={`${this.state.categories[id].toLowerCase()}`}
                   src={`${this.state.categories[id].toLowerCase()}.svg`}
                 />
+                <p>{this.state.categories[id]}</p>
               </li>
             ))}
           </ul>

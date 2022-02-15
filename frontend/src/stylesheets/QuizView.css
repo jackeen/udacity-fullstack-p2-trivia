@@ -1,47 +1,69 @@
-.quiz-play-holder {
-    width: 80%;
-    margin-left: 10%;
-    text-align: center;
-    margin-top: 40px;
-}
-
-.category-holder {
-    margin-top: 16px;
-    font-size: 24px;
+.quiz-holder {
+    padding-top: 2rem;
+    margin-bottom: 2rem;
 }
 
 .choose-header {
-    font-size: 34px;
-    font-weight: bold;
-}
-
-.play-category:hover {
-    color: dodgerblue;
-}
-
-.button {
-    width: 100px;
-    margin-top: 5px;
-    background-color: dodgerblue;
+    margin-bottom: 0.5rem;
+    text-align: center;
     color: white;
-    padding: 3px 5px;
-    align-self: center;
 }
 
-div.button {
-    margin-top: 20px;
-    margin-left: calc(50% - 50px);
+.category-holder, .quiz-play-holder {
+    max-width: 50rem;
+    padding: 2rem 4rem;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: var(--radius);
+}
+
+.category-holder {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 1rem;
+    grid-auto-rows: minmax(auto, auto);
+}
+.play-category {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem 0;
+    text-align: center;
+    background-color: var(--highlight-color);
+    border-radius: var(--radius);
+    color: white;
+    font-size: 1.25rem;
+    user-select: none;
+    cursor: pointer;
+    transition: ease 0.4s;
+}
+.play-category:hover {
+    box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 8px;
+}
+.play-category .img-box {
+    perspective: 1000;
+}
+.play-category img {
+    max-width: 2.5rem;
+    filter: invert(1);
+    transition: ease 0.4s;
+}
+.play-category:hover img {
+    transform: rotateY(180deg);
 }
 
 .quiz-question {
-    margin: 12px;
-    font-size: 24px;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--highlight-green);
+    text-align: center;
+    font-size: 1.25rem;
+    color: var(--highlight-green);
 }
 
 .correct {
-    color: green;
+    color: var(--highlight-green);
 }
 
 .wrong {
-    color: red;
+    color: lightsalmon;
 }

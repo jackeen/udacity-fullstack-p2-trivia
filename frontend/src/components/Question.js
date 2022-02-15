@@ -32,11 +32,10 @@ class Question extends Component {
             onClick={() => this.props.questionAction('DELETE')}
           />
         </div>
-        <div
-          className='show-answer button'
-          onClick={() => this.flipVisibility()}
-        >
-          {this.state.visibleAnswer ? 'Hide' : 'Show'} Answer
+        <div className='show-answer'>
+          <button onClick={() => this.flipVisibility()}>
+            {this.state.visibleAnswer ? 'Hide' : 'Show'} Answer
+          </button>
         </div>
         <div className='answer-holder'>
           <span
@@ -44,7 +43,7 @@ class Question extends Component {
               visibility: this.state.visibleAnswer ? 'visible' : 'hidden',
             }}
           >
-            Answer: {answer}
+            Answer: <b>{answer}</b>
           </span>
         </div>
       </div>

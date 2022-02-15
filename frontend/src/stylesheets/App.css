@@ -1,39 +1,32 @@
 .App-header {
-  background-color: #222;
-  color: white;
+  position: sticky;
+  left: 0;
+  top: 0;
+  width: 100%;
+  line-height: 3.5rem;
   display: flex;
-  justify-content: space-between;
-  height: 75px;
-  padding: 20px;
-  padding-right: 40%;
-  padding-left: 5%;
+  background-color: var(--highlight-gray);
+  color: white;
+  box-shadow: rgba(0, 0, 0, 0.8) 0 2px 5px;
 }
 
 .App-header > h1 {
-  color: dodgerblue;
+  padding: 0 2rem;
+  font-size: 1.25rem;
+  color: var(--highlight-color);
+  cursor: pointer;
+}
+.App-header > h2 {
+  padding: 0 2rem;
+  font-size: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: ease 0.2s;
+}
+.App-header > h2:hover {
+  color: var(--highlight-color);
 }
 
 .App-intro {
   font-size: large;
-}
-
-h2 {
-  text-align: center;
-}
-
-li {
-  text-align: center;
-  margin: 5px 0px;
-}
-
-ul {
-  list-style-type: none;
-  padding-inline-start: 0px;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  width: 80%;
-  margin: auto;
 }

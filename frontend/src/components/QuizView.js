@@ -101,11 +101,11 @@ class QuizView extends Component {
 
   renderPrePlay() {
     return (
-      <div className='quiz-play-holder'>
-        <div className='choose-header'>Choose Category</div>
+      <div className='quiz-holder'>
+        <h2 className='choose-header'>Choose Category</h2>
         <div className='category-holder'>
           <div className='play-category' onClick={this.selectCategory}>
-            ALL
+            All
           </div>
           {Object.keys(this.state.categories).map((id) => {
             return (
@@ -117,7 +117,13 @@ class QuizView extends Component {
                   this.selectCategory({ type: this.state.categories[id], id })
                 }
               >
-                {this.state.categories[id]}
+                <p className='img-box'>
+                  <img 
+                    alt={`${this.state.categories[id].toLowerCase()}`}
+                    src={`${this.state.categories[id].toLowerCase()}.svg`} 
+                  />
+                </p>
+                <p>{this.state.categories[id]}</p>
               </div>
             );
           })}
@@ -128,12 +134,14 @@ class QuizView extends Component {
 
   renderFinalScore() {
     return (
-      <div className='quiz-play-holder'>
-        <div className='final-header'>
-          Your Final Score is {this.state.numCorrect}
-        </div>
-        <div className='play-again button' onClick={this.restartGame}>
-          Play Again?
+      <div className='quiz-holder'>
+        <div className='quiz-play-holder'>
+          <div className='final-header'>
+            Your Final Score is {this.state.numCorrect}
+          </div>
+          <div className='play-again button' onClick={this.restartGame}>
+            Play Again?
+          </div>
         </div>
       </div>
     );
@@ -153,17 +161,19 @@ class QuizView extends Component {
   renderCorrectAnswer() {
     let evaluate = this.evaluateAnswer();
     return (
-      <div className='quiz-play-holder'>
-        <div className='quiz-question'>
-          {this.state.currentQuestion.question}
-        </div>
-        <div className={`${evaluate ? 'correct' : 'wrong'}`}>
-          {evaluate ? 'You were correct!' : 'You were incorrect'}
-        </div>
-        <div className='quiz-answer'>{this.state.currentQuestion.answer}</div>
-        <div className='next-question button' onClick={this.getNextQuestion}>
-          {' '}
-          Next Question{' '}
+      <div className='quiz-holder'>
+        <div className='quiz-play-holder'>
+          <div className='quiz-question'>
+            {this.state.currentQuestion.question}
+          </div>
+          <div className={`${evaluate ? 'correct' : 'wrong'}`}>
+            {evaluate ? 'You were correct!' : 'You were incorrect'}
+          </div>
+          <div className='quiz-answer'>{this.state.currentQuestion.answer}</div>
+          <div className='next-question button' onClick={this.getNextQuestion}>
+            {' '}
+            Next Question{' '}
+          </div>
         </div>
       </div>
     );
@@ -176,18 +186,21 @@ class QuizView extends Component {
     ) : this.state.showAnswer ? (
       this.renderCorrectAnswer()
     ) : (
-      <div className='quiz-play-holder'>
-        <div className='quiz-question'>
-          {this.state.currentQuestion.question}
+      <div className='quiz-holder'>
+        <div className='quiz-play-holder'>
+          <div className='quiz-question'>
+            {this.state.currentQuestion.question}
+          </div>
+          <form onSubmit={this.submitGuess}>
+            <input type='text' name='guess' onChange={this.handleChange} />
+            {/* <input
+              className='submit-guess button'
+              type='submit'
+              value='Submit Answer'
+            /> */}
+            <button type='submit'>Submit Answer</button>
+          </form>
         </div>
-        <form onSubmit={this.submitGuess}>
-          <input type='text' name='guess' onChange={this.handleChange} />
-          <input
-            className='submit-guess button'
-            type='submit'
-            value='Submit Answer'
-          />
-        </form>
       </div>
     );
   }

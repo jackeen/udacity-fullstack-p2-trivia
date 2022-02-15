@@ -1,6 +1,14 @@
+.categories-list > h2, .questions-list > h2{
+  display: none;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  color: #eee;
+}
+
 .question-view {
   display: flex;
   flex-direction: row;
+  padding: 1rem 2rem;
 }
 
 .categories-list {
@@ -8,73 +16,117 @@
   flex-shrink: 2;
 }
 
+.categories-list > ul {
+  padding: 1rem 0;
+  background-color: #eee;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.categories-list li {
+  display: flex;
+  padding: 0.5rem 1rem;
+  line-height: 2rem;
+  cursor: pointer;
+  transition: ease 0.2s;
+}
+.categories-list li:first-child{
+  padding-left: 3.5rem;
+}
+.categories-list li:hover {
+  text-indent: 1rem;
+}
 .categories-list li.selected {
-  background-color: dodgerblue;
-  color: white;
+  background-color: #ddd;
+  letter-spacing: 3px;
+  text-indent: 0;
+}
+.categories-list li > img{
+  width: 1.5rem;
+  margin-right: 1rem;
 }
 
-.categories-list > form {
-  width: 60%;
+.search {
+  display: flex;
+  padding-top: 1rem;
+}
+.search > input {
+  flex: 1;
+  box-sizing: border-box;
+  height: 3rem;
+  border: 2px solid var(--highlight-color);
+  outline: none;
+  background-color: #eee;
+  border-radius: var(--radius);
+}
+.search > input:focus {
+  background-color: white;
+}
+.search > button {
+  margin-left: 2px;
+  box-sizing: border-box;
 }
 
 .questions-list {
-  flex-basis: 75%;
-  text-align: center;
+  flex: 1;
+  margin-left: 1rem;
 }
 
 .Question-holder {
-  padding: 10px 20px;
-  border: 2px black solid;
-  text-align: left;
-  margin: 7px;
+  margin-bottom: 1rem;
+  background-color: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.Question {
+  padding: 2rem 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  background-color: var(--highlight-green);
+  color: white;
+}
+
+.Question-status, .show-answer {
+  padding: 0.5rem 1rem;
 }
 
 .Question-status {
   display: flex;
-  flex-direction: row;
-  height: 30px;
-  width: 200px;
-  align-items: center;
-  justify-content: space-between;
+}
+.Question-status img{
+  width: 1.5rem;
+}
+.Question-status .delete{
+  cursor: pointer;
+}
+.Question-status .difficulty {
+  padding: 0 0.5rem;
+  margin-right: 2rem;
 }
 
-.Question {
-  font-size: 21px;
-  width: 100%;
+.show-answer > button{
+  padding: .5rem 1rem;
 }
 
 .answer-holder {
-  font-size: 25px;
-  height: 25px;
-  margin: 5px 0px;
+  padding: 0.5rem 1rem;
+  background-color: #ddd;
 }
 
-.show-answer {
-  width: 100px;
-  margin-top: 5px;
-  background-color: dodgerblue;
+.pagination-menu {
+  text-align: center;
+}
+.page-num {
+  display: inline-block;
+  min-width: 1rem;
+  padding: 0.5rem;
+  margin-right: 0.5rem;
+  background-color: #ddd;
+  border-radius: var(--radius);
+  cursor: pointer;
+  user-select: none;
+}
+.page-num.active {
+  background-color: var(--highlight-color);
   color: white;
-  padding: 3px 5px;
-  margin-left: 0px !important;
-}
-
-span.page-num {
-  margin: 5px;
-  padding-bottom: 50px;
-  /* color: blue; */
-  font-weight: bolder;
-  text-decoration: underline;
-  font-size: 16px;
-}
-
-span.page-num.active {
-  color: blue;
-}
-
-img.category {
-  width: 30px;
-}
-
-img.delete {
-  width: 20px;
 }
