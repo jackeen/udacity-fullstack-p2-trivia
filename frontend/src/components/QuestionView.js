@@ -46,7 +46,7 @@ class QuestionView extends Component {
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
-          currentCategory: '-1', //result.current_category,
+          currentCategory: '0', //result.current_category,
         });
         return;
       },
@@ -114,7 +114,7 @@ class QuestionView extends Component {
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
-          currentCategory: '-1', //result.current_category,
+          currentCategory: '0', //result.current_category,
         });
         return;
       },
@@ -155,7 +155,7 @@ class QuestionView extends Component {
                 onClick={() => {
                   this.getQuestions();
                 }}
-                className={this.state.currentCategory === '-1' ? 'selected' : ''}
+                className={this.state.currentCategory === '0' ? 'selected' : ''}
               >
                 All
               </li>
