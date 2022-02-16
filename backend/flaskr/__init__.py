@@ -85,6 +85,25 @@ def create_app(test_config=None):
     TEST: When you click the trash icon next to a question, the question will be removed.
     This removal will persist in the database and when you refresh the page.
     """
+    @app.route('/questions/<int:question_id>', methods = ['DELETE'])
+    def delete_question(question_id):
+        question = db.session.query(Question).get(question_id)
+        if question is None:
+            abort(404)
+        
+        try:
+            question.delete()
+            db.session.commit()
+        except:
+            db.session.rollback()
+            abort(500)
+        finally:
+            db.session.close()
+
+        return jsonify({
+            'success': True
+        })
+
 
     """
     @TODO:
@@ -96,6 +115,33 @@ def create_app(test_config=None):
     the form will clear and the question will appear at the end of the last page
     of the questions list in the "List" tab.
     """
+    @app.route('/questions', methods = ['POST'])
+    def create_new_question():
+        body = request.get_json()
+        if body is None:
+            abort(422)
+        
+        new_question = Question(
+            question = body.get('question'),
+            answer = body.get('answer'),
+            category = body.get('category'),
+            difficulty = body.get('difficulty'),
+        )
+
+        try:
+            db.session.add(new_question)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            abort(500)
+        finally:
+            db.session.close()
+
+        return jsonify({
+            'success': True,
+            'question_id': new_question.id,
+        })
+
 
     """
     @TODO:
@@ -107,6 +153,24 @@ def create_app(test_config=None):
     only question that include that string within their question.
     Try using the word "title" to start.
     """
+    @app.route('/filter/questions', methods = ['POST'])
+    def searching_for_questions():
+        body = request.get_json()
+        
+        if body is None:
+            abort(422)
+        
+        keyword = body.get('keyword')
+        result = db.session.query(Question).\
+                    filter(Question.question.like(f'%{keyword}%')).\
+                    order_by('id').all()
+
+        return jsonify({
+            'success': True,
+            'total_questions': len(result),
+            'questions': [q.format() for q in result]
+        })
+
 
     """
     @TODO:
@@ -116,6 +180,18 @@ def create_app(test_config=None):
     categories in the left column will cause only questions of that
     category to be shown.
     """
+    @app.route('/categories/<int:category_id>/questions')
+    def get_questions_by_category(category_id):
+        result = db.session.query(Question).\
+                    filter(Question.category == category_id).\
+                    order_by('id').all()
+        
+        return jsonify({
+            'success': True,
+            'total_questions': len(result),
+            'questions': [q.format() for q in result],
+        })
+
 
     """
     @TODO:
@@ -128,6 +204,38 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     """
+    @app.route('/quizzes', methods = ['POST'])
+    def get_quizzes():
+        body = request.get_json()
+        if body is None:
+            abort(422)
+        
+        check_list = body.get('previous_questions')
+        cate_id = body.get('quiz_category')
+
+        if check_list is None or cate_id is None:
+            abort(422)
+        
+        query = db.session.query(Question)
+        result = None
+        if cate_id > 0:
+            result = query.filter(Category.id == cate_id).all()
+        else:
+            result = query.all()
+        
+        candidates = []
+        next_question = None
+        for q in result:
+            if q.id not in check_list:
+                candidates.append(q.format())
+
+        candidates_num = len(candidates)
+        if candidates_num > 0:
+            random_index = random.randint(0, candidates_num - 1)
+            next_question = candidates[random_index]
+
+        return jsonify(success = True, question = next_question)
+
 
     """
     @TODO:
@@ -157,6 +265,14 @@ def create_app(test_config=None):
             'error': 405,
             'message': 'Method not allowed',
         }), 405
+
+    @app.errorhandler(500)
+    def method_not_allowed(err):
+        return jsonify({
+            'success': False,
+            'error': 500,
+            'message': 'Please try again later',
+        }), 500
 
     return app
 
