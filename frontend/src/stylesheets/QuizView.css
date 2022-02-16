@@ -60,9 +60,6 @@
     font-size: 1.25rem;
     color: white;
 }
-.answer-form {
-    
-}
 .answer-form > input {
     box-sizing: border-box;
     width: 100%;
@@ -86,9 +83,6 @@
 }
 .quiz-result button {
     margin-top: 1rem;
-}
-.quiz-answer {
-    
 }
 .correct {
     color: var(--highlight-green);

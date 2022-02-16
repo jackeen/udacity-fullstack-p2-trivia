@@ -53,16 +53,9 @@
   flex: 1;
   box-sizing: border-box;
   height: 3rem;
-  border: 2px solid var(--highlight-color);
-  outline: none;
-  background-color: #eee;
-  border-radius: var(--radius);
-}
-.search > input:focus {
-  background-color: white;
 }
 .search > button {
-  margin-left: 2px;
+  margin-left: 0.5rem;
   box-sizing: border-box;
 }
 
