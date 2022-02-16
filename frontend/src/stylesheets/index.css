@@ -18,6 +18,7 @@ ul, ol {
 :root {
   --highlight-color: darkcyan;
   --highlight-green: rgb(104, 145, 104);
+  --highlight-orange: darkorange;
   --highlight-gray: #222;
   --radius: 6px;
 }

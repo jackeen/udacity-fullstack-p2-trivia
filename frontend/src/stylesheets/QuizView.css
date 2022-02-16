@@ -11,7 +11,7 @@
 
 .category-holder, .quiz-play-holder {
     max-width: 50rem;
-    padding: 2rem 4rem;
+    padding: 2rem;
     margin: 0 auto;
     background-color: white;
     border-radius: var(--radius);
@@ -53,17 +53,46 @@
 }
 
 .quiz-question {
-    margin-bottom: 1rem;
-    border-bottom: 2px solid var(--highlight-green);
-    text-align: center;
+    padding: 2rem 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: var(--radius);
+    background-color: var(--highlight-green);
     font-size: 1.25rem;
-    color: var(--highlight-green);
+    color: white;
+}
+.answer-form {
+    
+}
+.answer-form > input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 3rem;
+    line-height: 3rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+.answer-form > button {
+    display: block;
+    margin: 0 auto;
 }
 
+.final-header {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: bolder;
+}
+.quiz-result {
+    text-align: center;
+}
+.quiz-result button {
+    margin-top: 1rem;
+}
+.quiz-answer {
+    
+}
 .correct {
     color: var(--highlight-green);
 }
-
 .wrong {
-    color: lightsalmon;
+    color: var(--highlight-orange);
 }
