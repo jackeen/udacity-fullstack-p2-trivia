@@ -36,6 +36,7 @@
   text-indent: 1rem;
 }
 .categories-list li.selected {
+  border-left: 5px solid var(--highlight-color);
   background-color: #ddd;
   letter-spacing: 3px;
   text-indent: 0;
@@ -95,10 +96,6 @@
 .Question-status .difficulty {
   padding: 0 0.5rem;
   margin-right: 2rem;
-}
-
-.show-answer > button{
-  padding: .5rem 1rem;
 }
 
 .answer-holder {
