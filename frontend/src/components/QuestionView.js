@@ -13,6 +13,8 @@ class QuestionView extends Component {
       totalQuestions: 0,
       categories: {},
       currentCategory: null,
+      currentDataSource: '',
+      currentSearchTerm: '',
     };
   }
 
@@ -44,9 +46,10 @@ class QuestionView extends Component {
       type: 'GET',
       success: (result) => {
         this.setState({
+          currentDataSource: 'all',
           questions: result.questions,
           totalQuestions: result.total_questions,
-          currentCategory: '0', //result.current_category,
+          currentCategory: '0',
         });
         return;
       },
@@ -58,7 +61,21 @@ class QuestionView extends Component {
   };
 
   selectPage(num) {
-    this.setState({ page: num }, () => this.getQuestions());
+    this.setState({ page: num }, () => {
+
+      switch (this.state.currentDataSource) {
+        case 'cate':
+          this.getByCategory(this.state.currentCategory);
+          break;
+        case 'search':
+          this.launchSearch(this.state.currentSearchTerm, true);
+          break;
+        default:
+          // currentDataSource : all
+          this.getQuestions();
+      }
+      
+    });
   }
 
   createPagination() {
@@ -82,10 +99,11 @@ class QuestionView extends Component {
 
   getByCategory = (id) => {
     $.ajax({
-      url: `/categories/${id}/questions`, //TODO: update request URL
+      url: `/categories/${id}/questions?page=${this.state.page}`, //TODO: update request URL
       type: 'GET',
       success: (result) => {
         this.setState({
+          currentDataSource: 'cate',
           questions: result.questions,
           totalQuestions: result.total_questions,
           currentCategory: id, //result.current_category,
@@ -99,9 +117,20 @@ class QuestionView extends Component {
     });
   };
 
+  launchSearch = (searchTerm, isFormPage = false) => {
+    if (isFormPage) {
+      this.submitSearch(searchTerm);
+      return;
+    }
+
+    this.setState({ page: 1}, () => {
+      this.submitSearch(searchTerm);
+    })
+  };
+
   submitSearch = (searchTerm) => {
     $.ajax({
-      url: `/filter/questions`, //TODO: update request URL
+      url: `/filter/questions?page=${this.state.page}`, //TODO: update request URL
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json',
@@ -112,9 +141,11 @@ class QuestionView extends Component {
       crossDomain: true,
       success: (result) => {
         this.setState({
+          currentSearchTerm: searchTerm,
+          currentDataSource: 'search',
           questions: result.questions,
           totalQuestions: result.total_questions,
-          currentCategory: '0', //result.current_category,
+          currentCategory: '0',
         });
         return;
       },
@@ -153,7 +184,9 @@ class QuestionView extends Component {
           <ul>
               <li
                 onClick={() => {
-                  this.getQuestions();
+                  this.setState({ page: 1}, () => {
+                    this.getQuestions();
+                  });
                 }}
                 className={this.state.currentCategory === '0' ? 'selected' : ''}
               >
@@ -163,7 +196,9 @@ class QuestionView extends Component {
               <li
                 key={id}
                 onClick={() => {
-                  this.getByCategory(id);
+                  this.setState({ page: 1}, () => {
+                    this.getByCategory(id);
+                  });
                 }}
                 className={this.state.currentCategory === id ? 'selected' : ''}
               >
@@ -176,7 +211,7 @@ class QuestionView extends Component {
               </li>
             ))}
           </ul>
-          <Search submitSearch={this.submitSearch} />
+          <Search submitSearch={this.launchSearch} />
         </div>
         <div className='questions-list'>
           <h2>Questions</h2>

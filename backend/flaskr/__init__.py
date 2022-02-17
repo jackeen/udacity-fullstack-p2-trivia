@@ -1,5 +1,4 @@
 import os
-from unittest import result
 from flask import Flask, after_this_request, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -67,9 +66,9 @@ def create_app(test_config=None):
         
         total_number = db.session.query(Question).count()
         questions = db.session.query(Question).\
-                    order_by('id').\
-                    offset(offset).limit(QUESTIONS_PER_PAGE).\
-                    all()
+                        order_by('id').\
+                        offset(offset).limit(QUESTIONS_PER_PAGE).\
+                        all()
 
         return jsonify({
             'success': True,
@@ -120,16 +119,14 @@ def create_app(test_config=None):
         body = request.get_json()
         if body is None:
             abort(422)
-        
-        new_question = Question(
-            question = body.get('question'),
-            answer = body.get('answer'),
-            category = body.get('category'),
-            difficulty = body.get('difficulty'),
-        )
 
         try:
-            db.session.add(new_question)
+            db.session.add(Question(
+                question = body.get('question'),
+                answer = body.get('answer'),
+                category = body.get('category'),
+                difficulty = body.get('difficulty'),
+            ))
             db.session.commit()
         except:
             db.session.rollback()
@@ -139,7 +136,6 @@ def create_app(test_config=None):
 
         return jsonify({
             'success': True,
-            'question_id': new_question.id,
         })
 
 
@@ -156,18 +152,24 @@ def create_app(test_config=None):
     @app.route('/filter/questions', methods = ['POST'])
     def searching_for_questions():
         body = request.get_json()
-        
         if body is None:
             abort(422)
         
         keyword = body.get('keyword')
-        result = db.session.query(Question).\
-                    filter(Question.question.like(f'%{keyword}%')).\
-                    order_by('id').all()
+        page = request.args.get('page', 1, type=int)
+        offset = (page - 1) * QUESTIONS_PER_PAGE
+        
+        query = db.session.query(Question).\
+                    filter(Question.question.like(f'%{keyword}%'))
+        
+        total = query.count()
+        result = query.order_by('id').\
+                    offset(offset).limit(QUESTIONS_PER_PAGE).\
+                    all()
 
         return jsonify({
             'success': True,
-            'total_questions': len(result),
+            'total_questions': total,
             'questions': [q.format() for q in result]
         })
 
@@ -182,13 +184,20 @@ def create_app(test_config=None):
     """
     @app.route('/categories/<int:category_id>/questions')
     def get_questions_by_category(category_id):
-        result = db.session.query(Question).\
-                    filter(Question.category == category_id).\
-                    order_by('id').all()
+        page = request.args.get('page', 1, type=int)
+        offset = (page - 1) * QUESTIONS_PER_PAGE
+        
+        query = db.session.query(Question).\
+                    filter(Question.category == category_id)
+        
+        total = query.count()
+        result = query.order_by('id').\
+                    offset(offset).limit(QUESTIONS_PER_PAGE).\
+                    all()
         
         return jsonify({
             'success': True,
-            'total_questions': len(result),
+            'total_questions': total,
             'questions': [q.format() for q in result],
         })
 
