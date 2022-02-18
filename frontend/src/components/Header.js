@@ -17,6 +17,7 @@ class Header extends Component {
           Udacitrivia
         </h1>
         <h2
+          className={`${window.location.pathname === '/' ? 'selected':''}`}
           onClick={() => {
             this.navTo('');
           }}
@@ -24,6 +25,7 @@ class Header extends Component {
           List
         </h2>
         <h2
+          className={`${window.location.pathname === '/add' ? 'selected':''}`}
           onClick={() => {
             this.navTo('/add');
           }}
@@ -31,6 +33,7 @@ class Header extends Component {
           Add
         </h2>
         <h2
+          className={`${window.location.pathname === '/play' ? 'selected':''}`}
           onClick={() => {
             this.navTo('/play');
           }}
