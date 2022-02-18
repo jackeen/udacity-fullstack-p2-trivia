@@ -120,3 +120,9 @@
   background-color: var(--highlight-color);
   color: white;
 }
+.page-num:hover {
+  filter: brightness(0.9);
+}
+.page-num:active {
+  filter: brightness(1.1);
+}
