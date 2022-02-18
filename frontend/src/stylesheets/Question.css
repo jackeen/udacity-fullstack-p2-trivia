@@ -126,3 +126,10 @@
 .page-num:active {
   filter: brightness(1.1);
 }
+
+.no-questions {
+  padding: 2rem 1rem;
+  border-radius: var(--radius);
+  text-align: center;
+  background: #eee;
+}

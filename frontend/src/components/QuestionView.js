@@ -215,6 +215,9 @@ class QuestionView extends Component {
         </div>
         <div className='questions-list'>
           <h2>Questions</h2>
+          {this.state.questions.length === 0 && 
+            <div className='no-questions'>There are no questions can be showed for this operation.</div>
+          }
           {this.state.questions.map((q, ind) => (
             <Question
               key={q.id}
