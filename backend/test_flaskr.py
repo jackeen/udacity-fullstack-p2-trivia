@@ -36,7 +36,7 @@ class TriviaTestCase(unittest.TestCase):
     Write at least one test for each test for successful operation and for expected errors.
     """
     
-    def test_01_get_questions(self):
+    def test_get_questions(self):
         res = self.client().get('/questions')
         body = json.loads(res.data)
         
@@ -47,6 +47,42 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(body['success'], True)
         self.assertEqual(body['total_questions'], question_number)
         self.assertLessEqual(len(body['questions']), 10)
+
+
+    def test_create_question_without_data(self):
+        res = self.client().post('/questions')
+        body = json.loads(res.data)
+
+        self.assertEqual(body['success'], False)
+        self.assertEqual(body['error'], 422)
+
+
+    def test_create_question_with_data(self):
+        res = self.client().post('/questions', json = {
+            'question': 'testing',
+            'answer': 'testing',
+            'category': 1,
+            'difficulty': 1,
+        })
+        body = json.loads(res.data)
+
+        self.assertEqual(body['success'], True)
+
+
+    def test_create_question_with_wrong_data(self):
+        res = self.client().post('/questions', json = {
+            'question': '',
+            'answer': '',
+            'category': 1,
+            'difficulty': 1,
+        })
+        body = json.loads(res.data)
+
+        self.assertEqual(body['success'], False)
+        self.assertEqual(body['error'], 422)
+
+
+
 
 
 # Make the tests conveniently executable

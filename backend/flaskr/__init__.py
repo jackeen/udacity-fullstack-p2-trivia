@@ -120,12 +120,23 @@ def create_app(test_config=None):
         if body is None:
             abort(422)
 
+        question = body.get('question')
+        answer = body.get('answer')
+        category = body.get('category')
+        difficulty = body.get('difficulty')
+
+        if not ((isinstance(question, str) and question != '') and\
+            (isinstance(answer, str) and answer != '') and\
+            (isinstance(category, int) and category > 0) and\
+            (isinstance(difficulty, int) and difficulty > 0)):
+            abort(422)
+
         try:
             db.session.add(Question(
-                question = body.get('question'),
-                answer = body.get('answer'),
-                category = body.get('category'),
-                difficulty = body.get('difficulty'),
+                question = question,
+                answer = answer,
+                category = category,
+                difficulty = difficulty,
             ))
             db.session.commit()
         except:
