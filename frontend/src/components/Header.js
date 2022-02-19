@@ -2,9 +2,17 @@ import React, { Component } from 'react';
 import '../stylesheets/Header.css';
 
 class Header extends Component {
-  navTo(uri) {
-    window.location.href = window.location.origin + uri;
+  navTo(path) {
+    window.location.href = window.location.origin + path;
   }
+
+  navigator = {
+    '/': 'List',
+    '/add': 'Add',
+    '/play': 'Play',
+  }
+
+  currentPath = window.location.pathname
 
   render() {
     return (
@@ -16,30 +24,19 @@ class Header extends Component {
         >
           Udacitrivia
         </h1>
-        <h2
-          className={`${window.location.pathname === '/' ? 'selected':''}`}
-          onClick={() => {
-            this.navTo('');
-          }}
-        >
-          List
-        </h2>
-        <h2
-          className={`${window.location.pathname === '/add' ? 'selected':''}`}
-          onClick={() => {
-            this.navTo('/add');
-          }}
-        >
-          Add
-        </h2>
-        <h2
-          className={`${window.location.pathname === '/play' ? 'selected':''}`}
-          onClick={() => {
-            this.navTo('/play');
-          }}
-        >
-          Play
-        </h2>
+
+        {Object.keys(this.navigator).map((path) => (
+          <h2
+            key={path}
+            className = {`${this.currentPath === path ? 'selected':''}`}
+            onClick = {() => {
+              this.navTo(path)
+            }}
+          >
+            {this.navigator[path]}
+          </h2>
+        ))}
+
       </div>
     );
   }
