@@ -59,8 +59,8 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_create_question_with_data(self):
         res = self.client().post('/questions', json = {
-            'question': 'testing',
-            'answer': 'testing',
+            'question': 'create testing',
+            'answer': 'create testing',
             'category': 1,
             'difficulty': 1,
         })
@@ -82,7 +82,63 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(body['error'], 422)
 
 
+    def test_get_questions_by_category(self):
+        res = self.client().get('/categories/1/questions')
+        body = json.loads(res.data)
 
+        question_number = None
+        with self.app.app_context():
+            question_number = self.db.session.\
+                                query(Question).\
+                                filter(Question.category == 1).\
+                                count()
+        
+        self.assertEqual(body['success'], True)
+        self.assertEqual(body['total_questions'], question_number)
+        self.assertLessEqual(len(body['questions']), 10)
+
+
+    def test_delete_question(self):
+        target_question = Question(
+            question = 'testing',
+            answer = 'testing',
+            category = 1,
+            difficulty = 1,
+        )
+        target_question.insert()
+        
+        res = self.client().delete(f'/questions/{target_question.id}')
+        body = json.loads(res.data)
+        self.assertEqual(body['success'], True)
+
+
+    def test_search_questions(self):
+        res = self.client().post('/filter/questions', json = {
+            'keyword': 'What'
+        })
+        body = json.loads(res.data)
+        
+        question_number = None
+        with self.app.app_context():
+            question_number = self.db.session.query(Question).\
+                                filter(Question.question.like('%What%')).\
+                                count()
+
+        self.assertEqual(body['success'], True)
+        self.assertEqual(body['total_questions'], question_number)
+        self.assertLessEqual(len(body['questions']), 10)
+
+
+    def test_quiz_fetching(self):
+        res = self.client().post('/quizzes', json = {
+            'quiz_category': 0,
+            'previous_questions': [],
+        })
+        body = json.loads(res.data)
+
+        self.assertEqual(body['success'], True)
+        self.assertIsNotNone(body['question'])
+        
 
 
 # Make the tests conveniently executable
