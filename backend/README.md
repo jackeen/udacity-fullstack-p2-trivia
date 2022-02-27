@@ -71,7 +71,7 @@ One note before you delve into your tasks: for each endpoint, you are expected t
 
 You will need to provide detailed documentation of your API endpoints including the URL, request parameters, and the response body. Use the example below as a reference.
 
-### Documentation Example
+<!-- ### Documentation Example
 
 `GET '/api/v1.0/categories'`
 
@@ -88,6 +88,251 @@ You will need to provide detailed documentation of your API endpoints including 
   "5": "Entertainment",
   "6": "Sports"
 }
+``` -->
+
+## Documentation
+
+`GET '/categories'`
+
+Get all categories as map form, the key is categories' id 
+and the value is categories' name.
+
+Response example:
+```json
+{
+  "1": "Science",
+  "2": "Art",
+  "3": "Geography",
+  "4": "History",
+  "5": "Entertainment",
+  "6": "Sports"
+}
+```
+
+`GET '/questions'`
+
+Get all questions and the results grouped by 10 elements per page.
+If the number of questions less then 10, the number of items will be 
+exactly it was. If the page number is too large, the array of the 
+questions will be empty.
+
+Parameters:
+- page:int, the default value is 1
+
+Response:
+- total_questions:int, the number of all questions that hold by db
+- questions:list, a list of question
+- success:boolean, which indicates the request whether successful
+
+Response example:
+```json
+{
+  "success": true,
+  "total_questions": 2,
+  "questions": [
+    {
+      "answer": "Apollo 13",
+      "category": 5,
+      "difficulty": 4,
+      "id": 2,
+      "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+    }, {
+      "answer": "Tom Cruise", 
+      "category": 5, 
+      "difficulty": 4, 
+      "id": 4, 
+      "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+    }
+  ]
+}
+```
+
+`DELETE '/questions/${id}'`
+
+Delete the question with specific id, if there is no question with this id,
+the response will be the not found error.
+
+Parameters:
+- id:int, the id of the question user want to delete
+
+Response:
+- success:boolean, if the process is successful, it will be true
+
+Response example:
+```json
+{
+  "success": true
+}
+```
+
+`POST '/questions'`
+
+To create the new questions. If any of fields of required data is mission,
+the process will raise 422 error.
+
+Payloads:
+- One entity of question
+
+Responses:
+- success:boolean, which indicates the process successful or failed
+
+Payload example:
+```json
+{
+  "question": "a question",
+  "answer": "an answer",
+  "difficulty": 1,
+  "category": 1
+}
+```
+
+Response example:
+```json
+{
+  "success": true
+}
+```
+
+`POST '/filter/questions'`
+
+Search questions whose question including the given keyword, the pagination
+of the results are supported by using parameter 'page'. 
+
+Parameters:
+- page:int, for pagination, the default value is 1
+
+Payloads:
+- keyword:sting, hold search term for searching
+
+Responses:
+- success:boolean, whether or not success
+- total_questions:int, the number of all results under current keyword
+- questions:list, the result of list that holds entities of questions 
+
+Payload example:
+```json
+{
+  "keyword": "a term"
+}
+```
+
+Response example:
+```json
+{
+  "success": true, 
+  "total_questions": 2,
+  "questions": [{
+      "answer": "Agra", 
+      "category": 3, 
+      "difficulty": 2, 
+      "id": 15, 
+      "question": "The Taj Mahal is located in which Indian city?"
+    }, {
+      "answer": "Escher", 
+      "category": 2, 
+      "difficulty": 1, 
+      "id": 16, 
+      "question": "Which Dutch graphic artist\u2013initials M C was a creator of optical illusions?"
+    }]
+}
+```
+
+`GET '/categories/${id}/questions'`
+
+Get the questions that belong with specific category.
+
+Parameters:
+- id:int, the id of a category
+- page:int, for pagination of the results
+
+Responses:
+- success:boolean, whether or not success
+- total_questions:int, the number of all results under given category id
+- questions:list, the result of list that holds entities of questions 
+
+Response example:
+```json
+{
+  "success": true, 
+  "total_questions": 2,
+  "questions": [{
+      "answer": "Lake Victoria", 
+      "category": 3, 
+      "difficulty": 2, 
+      "id": 13, 
+      "question": "What is the largest lake in Africa?"
+    }, {
+      "answer": "Agra", 
+      "category": 3, 
+      "difficulty": 2, 
+      "id": 15, 
+      "question": "The Taj Mahal is located in which Indian city?"
+    }]
+}
+```
+
+`POST '/quizzes'`
+
+Get a random question from the entire questions, and pick out the questions 
+that provided by previous_questions. If quiz_category is 0, the scope of result
+is under all categories.
+
+Payloads:
+- quiz_category:int, the category for scope of playing
+- previous_questions:list, this list of questions' id
+
+Responses:
+- success:boolean, whether or not success
+- question:entity of question, the detailed information of question
+
+Payload example:
+```json
+{
+  "previous_questions": [],
+  "quiz_category": 0
+}
+```
+
+Response example:
+```json
+{
+  "success": true,
+  "question": {
+    "answer": "Alexander Fleming", 
+    "category": 1, 
+    "difficulty": 3, 
+    "id": 21, 
+    "question": "Who discovered penicillin?"
+  }
+}
+```
+
+Additional Error's examples
+```json
+{
+  "success": false,
+  "error": 404,
+  "message": "Not found"
+}
+
+{
+  "success": false,
+  "error": 422,
+  "message": "Unprocessable entity"
+}
+
+{
+  "success": false,
+  "error": 405,
+  "message": "Method not allowed"
+}
+
+{
+  "success": false,
+  "error": 500,
+  "message": "Please try again later"
+}
+
 ```
 
 ## Testing
