@@ -16,10 +16,11 @@ def create_app(test_config=None):
     else:
         setup_db(app, database_path=test_config['database_path'])
 
+
     """
     @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
     """
-    CORS(app, origins=['*'])
+    CORS(app, resources={r"/*": {"origins": "*"}})
 
 
     """
@@ -40,6 +41,8 @@ def create_app(test_config=None):
     @app.route('/categories')
     def get_categories():
         cates = db.session.query(Category).all()
+        
+        # format to the required form
         cate_dict = {}
         for c in cates:
             cate_dict[c.id] = c.type
@@ -65,15 +68,18 @@ def create_app(test_config=None):
         offset = (page - 1) * QUESTIONS_PER_PAGE
         
         total_number = db.session.query(Question).count()
-        questions = db.session.query(Question).\
-                        order_by('id').\
-                        offset(offset).limit(QUESTIONS_PER_PAGE).\
-                        all()
+        questions = []
+        if offset < total_number:
+            results = db.session.query(Question).\
+                            order_by('id').\
+                            offset(offset).limit(QUESTIONS_PER_PAGE).\
+                            all()
+            questions = [q.format() for q in results]
 
         return jsonify({
             'success': True,
             'total_questions': total_number,
-            'questions': [q.format() for q in questions],
+            'questions': questions,
         })
 
 
@@ -173,15 +179,18 @@ def create_app(test_config=None):
         query = db.session.query(Question).\
                     filter(Question.question.like(f'%{keyword}%'))
         
-        total = query.count()
-        result = query.order_by('id').\
-                    offset(offset).limit(QUESTIONS_PER_PAGE).\
-                    all()
-
+        total_number = query.count()
+        questions = []
+        if offset < total_number:
+            results = query.order_by('id').\
+                        offset(offset).limit(QUESTIONS_PER_PAGE).\
+                        all()
+            questions = [q.format() for q in results]
+        
         return jsonify({
             'success': True,
-            'total_questions': total,
-            'questions': [q.format() for q in result]
+            'total_questions': total_number,
+            'questions': questions,
         })
 
 
@@ -201,15 +210,18 @@ def create_app(test_config=None):
         query = db.session.query(Question).\
                     filter(Question.category == category_id)
         
-        total = query.count()
-        result = query.order_by('id').\
-                    offset(offset).limit(QUESTIONS_PER_PAGE).\
-                    all()
+        total_number = query.count()
+        questions = []
+        if offset < total_number:
+            results = query.order_by('id').\
+                        offset(offset).limit(QUESTIONS_PER_PAGE).\
+                        all()
+            questions = [q.format() for q in results]
         
         return jsonify({
             'success': True,
-            'total_questions': total,
-            'questions': [q.format() for q in result],
+            'total_questions': total_number,
+            'questions': questions,
         })
 
 
@@ -237,18 +249,20 @@ def create_app(test_config=None):
             abort(422)
         
         query = db.session.query(Question)
-        result = None
-        if cate_id > 0:
-            result = query.filter(Category.id == cate_id).all()
+        results = None
+        if cate_id == 0:
+            results = query.all()
         else:
-            result = query.all()
+            results = query.filter(Category.id == cate_id).all()
         
+        # select all candidates which are not the previous answered question
         candidates = []
         next_question = None
-        for q in result:
+        for q in results:
             if q.id not in check_list:
                 candidates.append(q.format())
-
+        
+        # pick up the random one from candidates for playing
         candidates_num = len(candidates)
         if candidates_num > 0:
             random_index = random.randint(0, candidates_num - 1)
