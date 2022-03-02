@@ -97,6 +97,11 @@ You will need to provide detailed documentation of your API endpoints including 
 Get all categories as map form, the key is categories' id 
 and the value is categories' name.
 
+- Request parameters: None
+- Request payload: None
+- Response body: A map contains key-value data, the key is category id and 
+  the value is category name.
+
 Response example:
 ```json
 {
@@ -116,13 +121,13 @@ If the number of questions less then 10, the number of items will be
 exactly it was. If the page number is too large, the array of the 
 questions will be empty.
 
-Parameters:
-- page:int, the default value is 1
-
-Response:
-- total_questions:int, the number of all questions that hold by db
-- questions:list, a list of question
-- success:boolean, which indicates the request whether successful
+- Request parameters:  
+  `page:int`, the default value is 1.
+- Request payload: None
+- Response body:  
+  `total_questions:int`, the number of all questions that hold by db.  
+  `questions:list`, a list of question, or empty.  
+  `success:boolean`, which indicates the request whether successful.
 
 Response example:
 ```json
@@ -152,11 +157,11 @@ Response example:
 Delete the question with specific id, if there is no question with this id,
 the response will be the not found error.
 
-Parameters:
-- id:int, the id of the question user want to delete
-
-Response:
-- success:boolean, if the process is successful, it will be true
+- Request parameters:  
+  `id:int`, the id of the question user want to delete.
+- Request payload: None
+- Response body:  
+  `success:boolean`, if the process is successful, it will be true.
 
 Response example:
 ```json
@@ -170,11 +175,11 @@ Response example:
 To create the new questions. If any of fields of required data is mission,
 the process will raise 422 error.
 
-Payloads:
-- One entity of question
-
-Responses:
-- success:boolean, which indicates the process successful or failed
+- Request parameters: None
+- Request payloads: One entity of question, including four fields, 
+  `question:string`, `answer:string`, `category:int`, `difficulty:int`
+- Responses body:  
+  `success:boolean`, which indicates the process successful or failed.
 
 Payload example:
 ```json
@@ -198,16 +203,14 @@ Response example:
 Search questions whose question including the given keyword, the pagination
 of the results are supported by using parameter 'page'. 
 
-Parameters:
-- page:int, for pagination, the default value is 1
-
-Payloads:
-- keyword:sting, hold search term for searching
-
-Responses:
-- success:boolean, whether or not success
-- total_questions:int, the number of all results under current keyword
-- questions:list, the result of list that holds entities of questions 
+- Request parameters:  
+  page:int, for pagination, the default value is 1.
+- Request payloads:  
+  `keyword:sting`, hold search term for searching.
+- Responses body:  
+  `success:boolean`, whether or not success.  
+  `total_questions:int`, the number of all results under current keyword.  
+  `questions:list`, the result of list that holds entities of questions. 
 
 Payload example:
 ```json
@@ -241,14 +244,14 @@ Response example:
 
 Get the questions that belong with specific category.
 
-Parameters:
-- id:int, the id of a category
-- page:int, for pagination of the results
-
-Responses:
-- success:boolean, whether or not success
-- total_questions:int, the number of all results under given category id
-- questions:list, the result of list that holds entities of questions 
+- Request parameters:  
+  `id:int`, the id of a category.  
+  `page:int`, for pagination of the results.
+- Request payload: None
+- Responses body:  
+  `success:boolean`, whether or not success.  
+  `total_questions:int`, the number of all results under given category id.  
+  `questions:list`, the result of list that holds entities of questions. 
 
 Response example:
 ```json
@@ -277,13 +280,13 @@ Get a random question from the entire questions, and pick out the questions
 that provided by previous_questions. If quiz_category is 0, the scope of result
 is under all categories.
 
-Payloads:
-- quiz_category:int, the category for scope of playing
-- previous_questions:list, this list of questions' id
-
-Responses:
-- success:boolean, whether or not success
-- question:entity of question, the detailed information of question
+- Request parameters: None
+- Request payloads:  
+  `quiz_category:int`, the category for scope of playing.  
+  `previous_questions:list`, the list of used questions id. 
+- Responses body:  
+  `success:boolean`, whether or not success.  
+  `question:map`, the detailed information of question. 
 
 Payload example:
 ```json
