@@ -248,27 +248,18 @@ def create_app(test_config=None):
         if check_list is None or cate_id is None:
             abort(422)
         
-        query = db.session.query(Question)
+        query = db.session.query(Question.id)
         results = None
-        if cate_id == 0:
-            results = query.all()
-        else:
-            results = query.filter(Category.id == cate_id).all()
-        
-        # select all candidates which are not the previous answered question
-        candidates = []
-        next_question = None
-        for q in results:
-            if q.id not in check_list:
-                candidates.append(q.format())
-        
-        # pick up the random one from candidates for playing
-        candidates_num = len(candidates)
-        if candidates_num > 0:
-            random_index = random.randint(0, candidates_num - 1)
-            next_question = candidates[random_index]
+        if cate_id != 0:
+            query = query.filter(Question.category == cate_id)
+        results = query.all()
 
-        return jsonify(success = True, question = next_question)
+        # pick up all questions without in previous questions
+        # the choose the random one for playing
+        candidates = list(set([id for id, in results]).difference(check_list))
+        next_question = Question.query.get(random.choice(candidates))
+        
+        return jsonify(success = True, question = next_question.format())
 
 
     """
